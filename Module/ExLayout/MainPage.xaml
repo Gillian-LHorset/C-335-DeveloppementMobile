@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ExLayout.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid BackgroundColor="ForestGreen"
+                      WidthRequest="150"
+                      HeightRequest="100"
+                      Grid.Column="0"></Grid>
+                <Grid BackgroundColor="#f5f5dd"
+                      WidthRequest="150"
+                      HeightRequest="100"
+                      Grid.Column="1">
+                    <Label Text="RIGHT EYE" 
+                           TextColor="Black"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"></Label>
+                </Grid>
+            </Grid>
+            <Grid x:Name="teeth_grid">
+
+                <Grid x:Name="tooth_brocken">
+                </Grid>
+                
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
