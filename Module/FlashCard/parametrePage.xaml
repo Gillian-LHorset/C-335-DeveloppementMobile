@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="FlashcardApp.CardDetailPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Détail Carte">
+
+    <StackLayout Padding="20" Spacing="15">
+
+        <Label Text="Page Détail de Carte" 
+               FontSize="20" 
+               HorizontalOptions="Center" />
+
+        <!-- Affichage des paramètres reçus -->
+        <Label x:Name="ParamsLabel" 
+               Text="Paramètres reçus : aucun"
+               BackgroundColor="LightGray"
+               Padding="10" />
+
+        <!-- Boutons de navigation -->
+        <Button Text="Aller à Édition"
+                BackgroundColor="Orange"
+                Clicked="OnEditClicked" />
+
+        <Button Text="Aller à Jeu"
+                BackgroundColor="Green"
+                Clicked="OnPlayClicked" />
+
+        <Button Text="Retour"
+                BackgroundColor="Gray"
+                Clicked="OnBackClicked" />
+
+    </StackLayout>
+</ContentPage>
