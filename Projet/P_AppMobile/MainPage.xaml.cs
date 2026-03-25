@@ -1,24 +1,28 @@
-﻿namespace P_AppMobile
-{
-    public partial class MainPage : ContentPage
-    {
-        int count = 0;
-
-        public MainPage()
-        {
+﻿namespace P_AppMobile {
+    public partial class MainPage : ContentPage {
+        public MainPage() {
             InitializeComponent();
+            Header(layout);
         }
 
-        private void OnCounterClicked(object sender, EventArgs e)
-        {
-            count++;
+        private async void OnCounterClicked(object sender, EventArgs e) {
+            await Shell.Current.GoToAsync("//TestPage");
+        }
 
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
+        public static void Header(Layout layout) {
 
-            SemanticScreenReader.Announce(CounterBtn.Text);
+            Label label = new Label {
+                WidthRequest = 500,
+                HeightRequest = 50,
+                Text = "test",
+                BackgroundColor = Color.FromRgb(230, 230, 230),
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Start
+
+            };
+
+
+            layout.Children.Insert(0, label);
         }
     }
 

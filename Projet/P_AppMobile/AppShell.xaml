@@ -8,8 +8,13 @@
     Title="P_AppMobile">
 
     <ShellContent
-        Title="Home"
+        Title=""
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
+    <ShellContent
+        Title="Texte page"
+        ContentTemplate="{DataTemplate local:NewTestPage}"
+        Route="TestPage" />
+    
 </Shell>
