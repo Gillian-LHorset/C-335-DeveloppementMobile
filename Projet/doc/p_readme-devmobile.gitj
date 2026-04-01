@@ -16,6 +16,16 @@
     {
       "sha": "3bea7a9225adf66fd7fb9981b61124525db372ef",
       "excluded": true
+    },
+    {
+      "id": "08043483-d29a-408c-a976-3119ed8cad7d",
+      "type": "commitless",
+      "name": "Réflexion et test sur l'intégration des epub",
+      "description": "",
+      "date": "2026-04-01T14:30:00.000Z",
+      "duration": 60,
+      "status": "WIP",
+      "author": "Gillian-LHorset"
     }
   ]
 }
