@@ -11,6 +11,19 @@
 
         public static void Header(Layout layout) {
 
+            Grid grid = new Grid {
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = new GridLength(100) }
+                },
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition(),
+                    new ColumnDefinition(),
+                    new ColumnDefinition()
+                }
+            };
+
             Label label = new Label {
                 WidthRequest = 500,
                 HeightRequest = 50,
@@ -18,11 +31,14 @@
                 BackgroundColor = Color.FromRgb(230, 230, 230),
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Start
-
             };
 
+            grid.Add(label, 0, 0);
+            grid.Add(label, 0, 2);
 
-            layout.Children.Insert(0, label);
+
+            layout.Children.Insert(0, grid); // TODO : ne fonctionne pas, à regler
+
         }
     }
 
