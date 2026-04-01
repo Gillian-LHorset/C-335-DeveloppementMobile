@@ -4,11 +4,9 @@
             InitializeComponent();
         }
 
-        private async void OnCounterClicked(object sender, EventArgs e) {
+        private async void AddBookClick(object sender, EventArgs e) {
             await Shell.Current.GoToAsync("//TestPage");
         }
-
-
     }
 
 }

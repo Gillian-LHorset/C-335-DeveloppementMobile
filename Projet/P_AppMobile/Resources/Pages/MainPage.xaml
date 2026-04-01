@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="P_AppMobile.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30,0"
+            Spacing="25">
+
+            <Label FontSize="Large"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="Center"
+                   Margin="0, 30, 0, 0"
+                   >
+                Accueil
+            </Label>
+
+            <VerticalStackLayout x:Name="RecentBook"></VerticalStackLayout>
+            
+            <Button
+                x:Name="AddBook"
+                Text="Ajouter un livre" 
+                Clicked="AddBookClick"
+                Padding="30"
+                WidthRequest="200"
+                TextColor="Black"
+                BackgroundColor="LightGray"/>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
