@@ -1,0 +1,21 @@
+{
+  "repoUrl": "https://github.com/Gillian-LHorset/C-335-DeveloppementMobile",
+  "projectName": "P_ReadMe-DevMobile",
+  "branch": "main",
+  "me": "Gillian-LHorset",
+  "journalStartDate": null,
+  "exceptions": [
+    {
+      "sha": "c09bb4b8052da9c90530a9b2a75a78da8fc8098f",
+      "excluded": true
+    },
+    {
+      "sha": "27dd02a9077b9387b3fd1dc9d80647da63075262",
+      "excluded": true
+    },
+    {
+      "sha": "3bea7a9225adf66fd7fb9981b61124525db372ef",
+      "excluded": true
+    }
+  ]
+}
