@@ -72,6 +72,21 @@ namespace FlashCard {
             UpdateInfo($"Ajouté: {name}");
         }
 
+        private async void OnViewDeckClicked(object sender, EventArgs e) {
+            Button? button = sender as Button;
+            Deck? deck = button?.CommandParameter as Deck;
+
+            if (deck == null) return;
+
+            Dictionary<string, object> navigationParameter = new Dictionary<string, object>
+            {
+                { "deck", deck },
+                { "dataService", _dataService }
+            };
+            await Shell.Current.GoToAsync("ViewDeckPage", navigationParameter);
+
+        }
+
         /// <summary>
         /// Delete a deck
         /// </summary>

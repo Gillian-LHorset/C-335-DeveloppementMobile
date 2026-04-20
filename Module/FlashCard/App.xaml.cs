@@ -8,6 +8,8 @@ namespace FlashCard {
             // Register navigation routes
             Routing.RegisterRoute("EditDeck", typeof(EditDeckPage));
 
+            Routing.RegisterRoute("ViewDeckPage", typeof(Pages.ViewDeckPage));
+
             MainPage = new AppShell();
         }
     }
