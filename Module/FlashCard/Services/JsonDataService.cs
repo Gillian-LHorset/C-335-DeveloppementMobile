@@ -48,7 +48,7 @@ namespace FlashCard.Services {
         }
 
         // about cards
-        public async Task<List<Card>> LoadCardsAsync(int DeckFk) {
+        public async Task<List<Card>> LoadCardsAsync(int deckFk) {
             try {
                 if (!File.Exists(_cardFilePath)) {
                     return new List<Card>();
@@ -60,11 +60,10 @@ namespace FlashCard.Services {
                 if (cards == null) {
                     return new List<Card>();
                 }
-                List<Card> filteredCards = cards.Where(card => card.DeckFk == DeckFk).ToList();
-                if (filteredCards == null) {
-                    return new List<Card>();
-                }
-                return filteredCards;
+
+                // On retourne directement la liste filtrée
+                return cards.Where(card => card.DeckFk == deckFk).ToList();
+
             } catch (Exception ex) {
                 System.Diagnostics.Debug.WriteLine($"Error loading: {ex.Message}");
                 return new List<Card>();

@@ -10,13 +10,17 @@
         <HorizontalStackLayout Grid.Row="0"
                               Spacing="10"
                               Margin="0,0,0,10">
-            <Entry x:Name="NewDeckEntry"
-                   Placeholder="Nom du nouveau deck"
+            <Entry x:Name="NewCardRectoEntry"
+                   Placeholder="Recto de la carte."
                    HorizontalOptions="FillAndExpand" />
 
-            <!--Clicked="OnAddDeckClicked"-->
+            <Entry x:Name="NewCardVersoEntry"
+               Placeholder="Verso de la carte."
+               HorizontalOptions="FillAndExpand" />
+
             <Button Text="Ajouter"
                     BackgroundColor="#2196F3"
+                    Clicked="OnAddCardClicked"
                     TextColor="White" />
         </HorizontalStackLayout>
 
