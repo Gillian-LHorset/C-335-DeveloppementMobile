@@ -16,7 +16,7 @@
             </Label>
 
             <VerticalStackLayout x:Name="RecentBook"></VerticalStackLayout>
-            
+
             <Button
                 x:Name="AddBook"
                 Text="Ajouter un livre" 
@@ -25,7 +25,11 @@
                 WidthRequest="200"
                 TextColor="Black"
                 BackgroundColor="LightGray"/>
+
+            <VerticalStackLayout x:Name="BooksList"></VerticalStackLayout>
+
         </VerticalStackLayout>
+
     </ScrollView>
 
 </ContentPage>
