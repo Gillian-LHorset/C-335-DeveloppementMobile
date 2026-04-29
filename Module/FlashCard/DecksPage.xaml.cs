@@ -1,4 +1,5 @@
 ﻿using FlashCard.Models;
+using FlashCard.Pages;
 using FlashCard.Services;
 using System.Collections.ObjectModel;
 
@@ -70,21 +71,16 @@ namespace FlashCard {
             // RefreshView();  ← SUPPRIMÉ !
             NewDeckEntry.Text = string.Empty;
             UpdateInfo($"Ajouté: {name}");
+
         }
 
-        private async void OnViewDeckClicked(object sender, EventArgs e) {
+        public async void OnViewDeckClicked(object sender, EventArgs e) {
             Button? button = sender as Button;
             Deck? deck = button?.CommandParameter as Deck;
 
-            if (deck == null) return;
-
-            Dictionary<string, object> navigationParameter = new Dictionary<string, object>
-            {
-                { "deck", deck },
-                { "dataService", _dataService }
-            };
-            await Shell.Current.GoToAsync("ViewDeckPage", navigationParameter);
-
+            ViewDeckPage dPage = new ViewDeckPage(deck);
+            dPage.BindingContext = deck;
+            await Navigation.PushAsync(dPage);
         }
 
         /// <summary>

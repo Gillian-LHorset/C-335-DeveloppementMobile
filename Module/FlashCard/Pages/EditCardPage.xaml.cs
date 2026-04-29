@@ -2,11 +2,14 @@ namespace FlashCard.Pages;
 
 using FlashCard.Models;
 using FlashCard.Services;
+using System.Collections.ObjectModel;
 
 public partial class EditCardPage : ContentPage, IQueryAttributable {
     private Card _card;
     private JsonDataService _dataService;
-    private List<Card> _cards;
+    private ObservableCollection<Card> _cards;
+    private string _recto;
+    private string _verso;
 
     public EditCardPage() {
         InitializeComponent();
@@ -14,7 +17,7 @@ public partial class EditCardPage : ContentPage, IQueryAttributable {
 
     // Receive navigation parameters
     public void ApplyQueryAttributes(IDictionary<string, object> query) {
-        if (query.TryGetValue("card", out object? deckObj) && deckObj is Card card) {
+        if (query.TryGetValue("card", out object? cardObj) && cardObj is Card card) {
             _card = card;
 
             // Initialize fields
@@ -26,7 +29,7 @@ public partial class EditCardPage : ContentPage, IQueryAttributable {
             _dataService = service;
         }
 
-        if (query.TryGetValue("cards", out object? decksObj) && decksObj is List<Card> cards) {
+        if (query.TryGetValue("cards", out object? cardsObj) && cardsObj is ObservableCollection<Card> cards) {
             _cards = cards;
         }
     }
@@ -50,7 +53,7 @@ public partial class EditCardPage : ContentPage, IQueryAttributable {
         _card.Verso = newVerso;
 
         // Save immediately to JSON
-        await _dataService.SaveCardsAsync(_cards);
+        await _dataService.SaveCardsAsync(_cards.ToList());
 
         await Shell.Current.GoToAsync("..");
     }

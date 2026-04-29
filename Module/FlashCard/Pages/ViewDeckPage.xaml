@@ -80,7 +80,8 @@
                 <Label Text="Aucune carte"
                            FontSize="18"
                            TextColor="Gray"
-                           HorizontalOptions="Center" />
+                           HorizontalOptions="Center" 
+                       x:Name="templs"/>
                 <Label Text="Ajoutez votre première carte ci-dessus"
                            FontSize="14"
                            TextColor="LightGray"

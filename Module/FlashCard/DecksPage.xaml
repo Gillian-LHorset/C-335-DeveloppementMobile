@@ -17,6 +17,12 @@
                     Clicked="OnAddDeckClicked"
                     BackgroundColor="#2196F3"
                     TextColor="White" />
+
+            <Label Text="Aucune carte"
+   FontSize="18"
+   TextColor="Gray"
+   HorizontalOptions="Center" 
+x:Name="testAled"/>
         </HorizontalStackLayout>
 
         <!-- Decks list -->
@@ -31,7 +37,7 @@
                            CornerRadius="8"
                            HasShadow="True">
                         <Grid ColumnDefinitions="*,Auto,Auto,Auto">
-
+                            
                             <!-- Deck info -->
                             <StackLayout Grid.Column="0"
                                         VerticalOptions="Center">
@@ -46,6 +52,8 @@
                                        TextColor="LightGray" />
                             </StackLayout>
 
+                            
+                            
                             <!-- View button -->
                             <Button Grid.Column="1"
                                    Text="👀"

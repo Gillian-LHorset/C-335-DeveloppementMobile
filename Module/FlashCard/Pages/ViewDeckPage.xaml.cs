@@ -1,20 +1,23 @@
 ﻿using FlashCard.Models;
 using FlashCard.Services;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace FlashCard.Pages;
 
 public partial class ViewDeckPage : ContentPage {
     private JsonDataService _dataService;
     private ObservableCollection<Card> _cards;
+    private Card _card;
     private Deck _deck;
     private int _nextId = 1;
 
-    public ViewDeckPage() {
+    public ViewDeckPage(Deck deck) {
         InitializeComponent();
+        _deck = deck;
         _dataService = new JsonDataService();
         _cards = new ObservableCollection<Card>();
-        LoadCards();
+        LoadCards(_deck);
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query) {
@@ -27,7 +30,7 @@ public partial class ViewDeckPage : ContentPage {
         }
     }
 
-    private async void LoadCards() {
+    private async void LoadCards(Deck _deck) {
         if (_deck != null) {
             List<Card> loadedCards = await _dataService.LoadCardsAsync(_deck.Id);
 
@@ -36,16 +39,12 @@ public partial class ViewDeckPage : ContentPage {
                 _cards.Add(card);
             }
 
-            if (_cards.Any()) {
-                _nextId = _cards.Max(d => d.Id) + 1;
-            }
 
             // Assign ItemsSource ONCE (no need to reassign every time)
             if (CardsCollectionView.ItemsSource == null) {
                 CardsCollectionView.ItemsSource = _cards;
             }
 
-            UpdateInfo($"Chargé: {_cards.Count} deck(s)");
         }
     }
 
@@ -69,6 +68,9 @@ public partial class ViewDeckPage : ContentPage {
             Verso = verso,
             DeckFk = _deck.Id
         };
+
+        Trace.WriteLine(recto);
+        Trace.WriteLine(verso);
 
         _cards.Add(newCard);  // ← La vue se met à jour automatiquement !
         await _dataService.SaveCardsAsync(_cards.ToList());
@@ -114,7 +116,7 @@ public partial class ViewDeckPage : ContentPage {
 
         // Remove deck
         _cards.Remove(card);
-        await _dataService.SaveCardsAsync(_cards);
+        await _dataService.SaveCardsAsync(_cards.ToList());
 
         RefreshView();
         UpdateInfo($"Supprimé: {card.Recto}");
@@ -127,5 +129,13 @@ public partial class ViewDeckPage : ContentPage {
 
     private void UpdateInfo(string message) {
         InfoLabel.Text = $"{DateTime.Now:HH:mm:ss} - {message}";
+    }
+
+    protected override void OnAppearing() {
+        base.OnAppearing();
+
+        // Nécessaire pour refléter les modifications de propriétés (ex: deck.Name changé dans EditDeckPage)
+        // ObservableCollection détecte les ajouts/suppressions, mais PAS les changements de propriétés
+        RefreshView();
     }
 }

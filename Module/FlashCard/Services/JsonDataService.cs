@@ -1,4 +1,5 @@
 ﻿using FlashCard.Models;
+using System.Diagnostics;
 using System.Text.Json;
 
 namespace FlashCard.Services {
@@ -28,6 +29,7 @@ namespace FlashCard.Services {
 
                 string json = await File.ReadAllTextAsync(_deckFilePath);
                 List<Deck>? decks = JsonSerializer.Deserialize<List<Deck>>(json);
+
                 return decks ?? new List<Deck>();
             } catch (Exception ex) {
                 System.Diagnostics.Debug.WriteLine($"Error loading: {ex.Message}");
@@ -57,11 +59,16 @@ namespace FlashCard.Services {
                 string json = await File.ReadAllTextAsync(_cardFilePath);
                 List<Card>? cards = JsonSerializer.Deserialize<List<Card>>(json);
 
-                if (cards == null) {
-                    return new List<Card>();
+                foreach (Card card in cards) {
+
+                    Trace.WriteLine("id : " + card.Id);
+
+                    Trace.WriteLine("recto : " + card.Recto);
+
+                    Trace.WriteLine("verso : " + card.Verso);
                 }
 
-                // On retourne directement la liste filtrée
+
                 return cards.Where(card => card.DeckFk == deckFk).ToList();
 
             } catch (Exception ex) {
