@@ -19,10 +19,10 @@
                     TextColor="White" />
 
             <Label Text="Aucune carte"
-   FontSize="18"
-   TextColor="Gray"
-   HorizontalOptions="Center" 
-x:Name="testAled"/>
+               FontSize="18"
+               TextColor="Gray"
+               HorizontalOptions="Center" 
+            x:Name="testAled"/>
         </HorizontalStackLayout>
 
         <!-- Decks list -->

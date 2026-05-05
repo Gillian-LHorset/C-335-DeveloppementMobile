@@ -14,31 +14,6 @@
                Placeholder="Nom du deck"
                FontSize="18" />
 
-        <Label Text="Nombre de cartes"
-               FontSize="16"
-               FontAttributes="Bold"
-               Margin="0,20,0,0" />
-
-        <HorizontalStackLayout Spacing="10">
-            <Button Text="-"
-                   Clicked="OnDecrementClicked"
-                   WidthRequest="50"
-                   BackgroundColor="LightGray" />
-
-            <Label x:Name="CardCountLabel"
-                   Text="0"
-                   FontSize="24"
-                   VerticalOptions="Center"
-                   HorizontalOptions="Center"
-                   WidthRequest="60"
-                   HorizontalTextAlignment="Center" />
-
-            <Button Text="+"
-                   Clicked="OnIncrementClicked"
-                   WidthRequest="50"
-                   BackgroundColor="LightGray" />
-        </HorizontalStackLayout>
-
         <Button Text="Sauvegarder"
                Clicked="OnSaveClicked"
                BackgroundColor="#4CAF50"

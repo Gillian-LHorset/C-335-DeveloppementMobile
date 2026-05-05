@@ -1,14 +1,12 @@
-﻿using FlashCard.Models;
+using FlashCard.Models;
 using FlashCard.Services;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace FlashCard.Pages;
 
 public partial class ViewDeckPage : ContentPage {
     private JsonDataService _dataService;
     private ObservableCollection<Card> _cards;
-    private Card _card;
     private Deck _deck;
     private int _nextId = 1;
 
@@ -17,34 +15,28 @@ public partial class ViewDeckPage : ContentPage {
         _deck = deck;
         _dataService = new JsonDataService();
         _cards = new ObservableCollection<Card>();
-        LoadCards(_deck);
+        LoadCards();
     }
 
-    public void ApplyQueryAttributes(IDictionary<string, object> query) {
-        if (query.TryGetValue("card", out object? cardObj) && cardObj is Card card) {
-            _card = card;
+    private async void LoadCards() {
+        if (_deck == null) return;
+
+        List<Card> loadedCards = await _dataService.LoadCardsAsync(_deck.Id);
+
+        _cards.Clear();
+        foreach (Card card in loadedCards) {
+            _cards.Add(card);
         }
 
-        if (query.TryGetValue("dataService", out object? serviceObj) && serviceObj is JsonDataService service) {
-            _dataService = service;
+        // Calculate next ID from ALL cards (not just this deck) to avoid collisions
+        List<Card> allCards = await _dataService.LoadAllCardsAsync();
+        if (allCards.Any()) {
+            _nextId = allCards.Max(c => c.Id) + 1;
         }
-    }
 
-    private async void LoadCards(Deck _deck) {
-        if (_deck != null) {
-            List<Card> loadedCards = await _dataService.LoadCardsAsync(_deck.Id);
-
-            _cards.Clear();
-            foreach (Card card in loadedCards) {
-                _cards.Add(card);
-            }
-
-
-            // Assign ItemsSource ONCE (no need to reassign every time)
-            if (CardsCollectionView.ItemsSource == null) {
-                CardsCollectionView.ItemsSource = _cards;
-            }
-
+        // Assign ItemsSource ONCE (no need to reassign every time)
+        if (CardsCollectionView.ItemsSource == null) {
+            CardsCollectionView.ItemsSource = _cards;
         }
     }
 
@@ -69,13 +61,9 @@ public partial class ViewDeckPage : ContentPage {
             DeckFk = _deck.Id
         };
 
-        Trace.WriteLine(recto);
-        Trace.WriteLine(verso);
+        _cards.Add(newCard);
+        await _dataService.SaveCardsForDeckAsync(_deck.Id, _cards.ToList());
 
-        _cards.Add(newCard);  // ← La vue se met à jour automatiquement !
-        await _dataService.SaveCardsAsync(_cards.ToList());
-
-        // RefreshView();  ← SUPPRIMÉ !
         NewCardRectoEntry.Text = string.Empty;
         NewCardVersoEntry.Text = string.Empty;
         UpdateInfo($"Carte ajoutée.");
@@ -87,14 +75,14 @@ public partial class ViewDeckPage : ContentPage {
 
         if (card == null) return;
 
-        // Navigate to edit page using Shell
-        // Pass deck, dataService and decks list so EditDeckPage can save
+        // Navigate to edit page, pass card, dataService and cards list
         Dictionary<string, object> navigationParameter = new Dictionary<string, object>
         {
-        { "card", card },
-        { "dataService", _dataService },
-        { "cards", _cards }
-    };
+            { "card", card },
+            { "dataService", _dataService },
+            { "cards", _cards },
+            { "deckId", _deck.Id }
+        };
         await Shell.Current.GoToAsync("EditCard", navigationParameter);
     }
 
@@ -114,11 +102,10 @@ public partial class ViewDeckPage : ContentPage {
 
         if (!confirm) return;
 
-        // Remove deck
+        // Remove card
         _cards.Remove(card);
-        await _dataService.SaveCardsAsync(_cards.ToList());
+        await _dataService.SaveCardsForDeckAsync(_deck.Id, _cards.ToList());
 
-        RefreshView();
         UpdateInfo($"Supprimé: {card.Recto}");
     }
 
@@ -134,8 +121,7 @@ public partial class ViewDeckPage : ContentPage {
     protected override void OnAppearing() {
         base.OnAppearing();
 
-        // Nécessaire pour refléter les modifications de propriétés (ex: deck.Name changé dans EditDeckPage)
-        // ObservableCollection détecte les ajouts/suppressions, mais PAS les changements de propriétés
-        RefreshView();
+        // Reload cards to reflect modifications from EditCardPage
+        LoadCards();
     }
 }

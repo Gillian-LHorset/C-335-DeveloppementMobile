@@ -1,4 +1,4 @@
-﻿using FlashCard.Models;
+using FlashCard.Models;
 using System.Diagnostics;
 using System.Text.Json;
 
@@ -50,7 +50,11 @@ namespace FlashCard.Services {
         }
 
         // about cards
-        public async Task<List<Card>> LoadCardsAsync(int deckFk) {
+
+        /// <summary>
+        /// Load all cards from the JSON file (all decks)
+        /// </summary>
+        public async Task<List<Card>> LoadAllCardsAsync() {
             try {
                 if (!File.Exists(_cardFilePath)) {
                     return new List<Card>();
@@ -59,21 +63,39 @@ namespace FlashCard.Services {
                 string json = await File.ReadAllTextAsync(_cardFilePath);
                 List<Card>? cards = JsonSerializer.Deserialize<List<Card>>(json);
 
-                foreach (Card card in cards) {
-
-                    Trace.WriteLine("id : " + card.Id);
-
-                    Trace.WriteLine("recto : " + card.Recto);
-
-                    Trace.WriteLine("verso : " + card.Verso);
-                }
-
-
-                return cards.Where(card => card.DeckFk == deckFk).ToList();
-
+                return cards ?? new List<Card>();
             } catch (Exception ex) {
-                System.Diagnostics.Debug.WriteLine($"Error loading: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error loading all cards: {ex.Message}");
                 return new List<Card>();
+            }
+        }
+
+        /// <summary>
+        /// Load cards for a specific deck
+        /// </summary>
+        public async Task<List<Card>> LoadCardsAsync(int deckFk) {
+            List<Card> allCards = await LoadAllCardsAsync();
+            return allCards.Where(card => card.DeckFk == deckFk).ToList();
+        }
+
+        /// <summary>
+        /// Save cards for a specific deck, preserving cards from other decks
+        /// </summary>
+        public async Task SaveCardsForDeckAsync(int deckFk, List<Card> deckCards) {
+            try {
+                // Load all existing cards
+                List<Card> allCards = await LoadAllCardsAsync();
+
+                // Remove old cards for this deck
+                allCards.RemoveAll(c => c.DeckFk == deckFk);
+
+                // Add the updated cards for this deck
+                allCards.AddRange(deckCards);
+
+                // Save all cards back
+                await SaveCardsAsync(allCards);
+            } catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine($"Error saving cards for deck: {ex.Message}");
             }
         }
 

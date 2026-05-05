@@ -1,4 +1,4 @@
-﻿using FlashCard.Models;
+using FlashCard.Models;
 using FlashCard.Pages;
 using FlashCard.Services;
 using System.Collections.ObjectModel;
@@ -19,9 +19,14 @@ namespace FlashCard {
         private async void LoadDecks() {
             List<Deck> loadedDecks = await _dataService.LoadDecksAsync();
 
+            // Load all cards to compute CardCount dynamically
+            List<Models.Card> allCards = await _dataService.LoadAllCardsAsync();
+
             // Clear and repopulate ObservableCollection
             _decks.Clear();
             foreach (Deck deck in loadedDecks) {
+                // Compute CardCount dynamically
+                deck.CardCount = allCards.Count(c => c.DeckFk == deck.Id);
                 _decks.Add(deck);
             }
 
@@ -61,8 +66,7 @@ namespace FlashCard {
 
             Deck newDeck = new Deck {
                 Id = _nextId++,
-                Name = name,
-                CardCount = 0
+                Name = name
             };
 
             _decks.Add(newDeck);  // ← La vue se met à jour automatiquement !

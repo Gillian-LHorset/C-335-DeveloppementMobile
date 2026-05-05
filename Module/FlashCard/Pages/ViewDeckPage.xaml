@@ -36,13 +36,13 @@
                            HasShadow="True">
                     <Grid ColumnDefinitions="*,Auto,Auto">
 
-                        <!-- Deck info -->
+                        <!-- Card info -->
                         <StackLayout Grid.Column="0"
                                         VerticalOptions="Center">
-                            <Label Text="{Binding Name}"
+                            <Label Text="{Binding Recto}"
                                        FontSize="18"
                                        FontAttributes="Bold" />
-                            <Label Text="{Binding CardCount, StringFormat='{0} cartes'}"
+                            <Label Text="{Binding Verso}"
                                        FontSize="14"
                                        TextColor="Gray" />
                             <Label Text="{Binding CreatedDate, StringFormat='Créé le {0:dd/MM/yyyy}'}"
@@ -50,20 +50,20 @@
                                        TextColor="LightGray" />
                         </StackLayout>
 
-                            <!--Clicked="OnEditDeckClicked"-->
                             <!-- Edit button -->
                         <Button Grid.Column="1"
                                    Text="✏️"
                                    FontSize="20"
                                    BackgroundColor="Transparent"
+                                   Clicked="OnEditCardClicked"
                                    CommandParameter="{Binding .}" />
 
-                            <!--Clicked="OnDeleteDeckClicked"-->
                             <!-- Delete button -->
                         <Button Grid.Column="2"
                                    Text="🗑️"
                                    FontSize="20"
                                    BackgroundColor="Transparent"
+                                   Clicked="OnDeleteCardClicked"
                                    CommandParameter="{Binding .}" />
                     </Grid>
                 </Frame>
