@@ -7,22 +7,33 @@
     <Grid RowDefinitions="Auto,*,Auto" Padding="10">
 
         <!-- Header with add button -->
-        <HorizontalStackLayout Grid.Row="0"
-                              Spacing="10"
-                              Margin="0,0,0,10">
-            <Entry x:Name="NewCardRectoEntry"
-                   Placeholder="Recto de la carte."
+        <VerticalStackLayout>
+            <HorizontalStackLayout Grid.Row="0"
+                                  Spacing="10"
+                                  Margin="0,0,0,10">
+                <Entry x:Name="NewCardRectoEntry"
+                       Placeholder="Recto de la carte."
+                       HorizontalOptions="FillAndExpand" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout>
+
+                <Entry x:Name="NewCardVersoEntry"
+                   Placeholder="Verso de la carte."
                    HorizontalOptions="FillAndExpand" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout>
 
-            <Entry x:Name="NewCardVersoEntry"
-               Placeholder="Verso de la carte."
-               HorizontalOptions="FillAndExpand" />
+                <Button Text="Ajouter"
+                        BackgroundColor="#2196F3"
+                        Clicked="OnAddCardClicked"
+                        TextColor="White" />
 
-            <Button Text="Ajouter"
-                    BackgroundColor="#2196F3"
-                    Clicked="OnAddCardClicked"
-                    TextColor="White" />
-        </HorizontalStackLayout>
+                <Button Text="▶ Jouer"
+                        BackgroundColor="#4CAF50"
+                        Clicked="OnPlayQuizClicked"
+                        TextColor="White" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
 
         <CollectionView Grid.Row="1"
                        x:Name="CardsCollectionView"

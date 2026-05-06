@@ -7,23 +7,21 @@
     <Grid RowDefinitions="Auto,*,Auto" Padding="10">
 
         <!-- Header with add button -->
+        <VerticalStackLayout>
         <HorizontalStackLayout Grid.Row="0"
                               Spacing="10"
                               Margin="0,0,0,10">
             <Entry x:Name="NewDeckEntry"
                    Placeholder="Nom du nouveau deck"
                    HorizontalOptions="FillAndExpand" />
-            <Button Text="Ajouter"
+            </HorizontalStackLayout>
+            <HorizontalStackLayout>
+                <Button Text="Ajouter"
                     Clicked="OnAddDeckClicked"
                     BackgroundColor="#2196F3"
                     TextColor="White" />
-
-            <Label Text="Aucune carte"
-               FontSize="18"
-               TextColor="Gray"
-               HorizontalOptions="Center" 
-            x:Name="testAled"/>
-        </HorizontalStackLayout>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
 
         <!-- Decks list -->
         <CollectionView Grid.Row="1"

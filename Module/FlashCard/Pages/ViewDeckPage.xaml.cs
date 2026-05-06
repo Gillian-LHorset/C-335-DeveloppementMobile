@@ -28,13 +28,11 @@ public partial class ViewDeckPage : ContentPage {
             _cards.Add(card);
         }
 
-        // Calculate next ID from ALL cards (not just this deck) to avoid collisions
         List<Card> allCards = await _dataService.LoadAllCardsAsync();
         if (allCards.Any()) {
             _nextId = allCards.Max(c => c.Id) + 1;
         }
 
-        // Assign ItemsSource ONCE (no need to reassign every time)
         if (CardsCollectionView.ItemsSource == null) {
             CardsCollectionView.ItemsSource = _cards;
         }
@@ -75,7 +73,6 @@ public partial class ViewDeckPage : ContentPage {
 
         if (card == null) return;
 
-        // Navigate to edit page, pass card, dataService and cards list
         Dictionary<string, object> navigationParameter = new Dictionary<string, object>
         {
             { "card", card },
@@ -92,7 +89,6 @@ public partial class ViewDeckPage : ContentPage {
 
         if (card == null) return;
 
-        // Confirm deletion
         bool confirm = await DisplayAlert(
             "Confirmation",
             $"Voulez-vous vraiment supprimer la question '{card.Recto}' ?",
@@ -102,16 +98,20 @@ public partial class ViewDeckPage : ContentPage {
 
         if (!confirm) return;
 
-        // Remove card
         _cards.Remove(card);
         await _dataService.SaveCardsForDeckAsync(_deck.Id, _cards.ToList());
 
         UpdateInfo($"Supprimé: {card.Recto}");
     }
 
-    private void RefreshView() {
-        CardsCollectionView.ItemsSource = null;
-        CardsCollectionView.ItemsSource = _cards;
+    private async void OnPlayQuizClicked(object sender, EventArgs e) {
+        if (_cards == null || _cards.Count == 0) {
+            await DisplayAlert("Erreur", "Ce deck ne contient aucune carte. Ajoutez des cartes avant de jouer.", "OK");
+            return;
+        }
+
+        QuizPage quizPage = new QuizPage(_deck, _cards.ToList());
+        await Navigation.PushAsync(quizPage);
     }
 
     private void UpdateInfo(string message) {
@@ -121,7 +121,7 @@ public partial class ViewDeckPage : ContentPage {
     protected override void OnAppearing() {
         base.OnAppearing();
 
-        // Reload cards to reflect modifications from EditCardPage
+        // reload cards from EditCardPage
         LoadCards();
     }
 }

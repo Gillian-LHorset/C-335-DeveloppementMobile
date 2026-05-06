@@ -1,4 +1,4 @@
-﻿using Flashcard;
+using Flashcard;
 using FlashCard.Pages;
 
 namespace FlashCard {
@@ -12,6 +12,8 @@ namespace FlashCard {
             Routing.RegisterRoute("EditCard", typeof(EditCardPage));
 
             Routing.RegisterRoute("ViewDeckPage", typeof(Pages.ViewDeckPage));
+
+            Routing.RegisterRoute("QuizPage", typeof(Pages.QuizPage));
 
             MainPage = new AppShell();
         }

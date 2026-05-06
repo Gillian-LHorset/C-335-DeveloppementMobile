@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FlashCard.Pages.QuizPage"
+             Title="Quiz">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20">
+
+        <StackLayout Grid.Row="0" Spacing="5" Margin="0,0,0,10">
+            <Label x:Name="ProgressLabel"
+                   Text="Question 1 / 10"
+                   FontSize="16"
+                   TextColor="Gray"
+                   HorizontalOptions="Center" />
+            <ProgressBar x:Name="QuizProgressBar"
+                         Progress="0"
+                         ProgressColor="#2196F3"
+                         HeightRequest="8" />
+        </StackLayout>
+
+        <Grid Grid.Row="1" VerticalOptions="Center" HorizontalOptions="Fill">
+
+            <!-- question -->
+            <Frame x:Name="QuestionFrame"
+                   Padding="30"
+                   CornerRadius="16"
+                   IsVisible="True">
+                <StackLayout Spacing="20" VerticalOptions="Center">
+                    <Label x:Name="QuestionLabel"
+                           Text="Question"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="Center" />
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="15" Margin="0,20,0,0">
+                        <Button Grid.Column="0"
+                                x:Name="KnowButton"
+                                Text="Je sais"
+                                FontSize="16"
+                                BackgroundColor="#1cfc03"
+                                TextColor="White"
+                                CornerRadius="10"
+                                HeightRequest="50"
+                                Clicked="OnKnowClicked" />
+                        <Button Grid.Column="1"
+                                x:Name="DontKnowButton"
+                                Text="Je ne sais pas"
+                                FontSize="16"
+                                BackgroundColor="#fc0303"
+                                TextColor="White"
+                                CornerRadius="10"
+                                HeightRequest="50"
+                                Clicked="OnDontKnowClicked" />
+                    </Grid>
+                </StackLayout>
+            </Frame>
+
+            <!-- reveal answert -->
+            <Frame x:Name="AnswerFrame"
+                   Padding="30"
+                   CornerRadius="16"
+                   BorderColor="#fc0303"
+                   HasShadow="True"
+                   BackgroundColor="#FFF3F3"
+                   IsVisible="False">
+                <StackLayout Spacing="20" VerticalOptions="Center">
+                    <Label Text="La réponse était :"
+                           FontSize="16"
+                           TextColor="Gray"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="Center" />
+                    <Label x:Name="AnswerLabel"
+                           Text="Réponse"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="#fc0303"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="Center" />
+                    <Button x:Name="NextButton"
+                            Text="Suivant"
+                            FontSize="16"
+                            BackgroundColor="#2196F3"
+                            TextColor="White"
+                            CornerRadius="10"
+                            HeightRequest="50"
+                            Clicked="OnNextClicked"
+                            HorizontalOptions="Fill" />
+                </StackLayout>
+            </Frame>
+
+            <!-- results  -->
+            <Frame x:Name="ResultsFrame"
+                   Padding="30"
+                   IsVisible="False">
+                <StackLayout Spacing="15" VerticalOptions="Center">
+                    <Label Text="Quiz terminé !"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="Center" />
+
+                    <Label x:Name="ScoreLabel"
+                           Text=""
+                           FontSize="20"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="Center" />
+                    <Label x:Name="FailedLabel"
+                           Text=""
+                           FontSize="16"
+                           TextColor="#fc0303"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="Center" />
+
+                    <Button x:Name="BackButton"
+                            Text="Retour aux decks"
+                            FontSize="16"
+                            TextColor="White"
+                            CornerRadius="10"
+                            HeightRequest="50"
+                            Clicked="OnBackToDecksClicked"
+                            Margin="0,20,0,0"
+                            HorizontalOptions="Fill" />
+                </StackLayout>
+            </Frame>
+        </Grid>
+
+        <Label Grid.Row="2"
+               x:Name="InfoLabel"
+               Text=""
+               FontSize="12"
+               TextColor="Gray"
+               HorizontalOptions="Center"
+               Margin="0,10,0,0" />
+    </Grid>
+
+</ContentPage>
