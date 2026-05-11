@@ -60,27 +60,21 @@
             <Frame x:Name="AnswerFrame"
                    Padding="30"
                    CornerRadius="16"
-                   BorderColor="#fc0303"
-                   HasShadow="True"
-                   BackgroundColor="#FFF3F3"
                    IsVisible="False">
                 <StackLayout Spacing="20" VerticalOptions="Center">
                     <Label Text="La réponse était :"
                            FontSize="16"
-                           TextColor="Gray"
                            HorizontalTextAlignment="Center"
                            HorizontalOptions="Center" />
                     <Label x:Name="AnswerLabel"
                            Text="Réponse"
                            FontSize="22"
                            FontAttributes="Bold"
-                           TextColor="#fc0303"
                            HorizontalTextAlignment="Center"
                            HorizontalOptions="Center" />
                     <Button x:Name="NextButton"
                             Text="Suivant"
                             FontSize="16"
-                            BackgroundColor="#2196F3"
                             TextColor="White"
                             CornerRadius="10"
                             HeightRequest="50"

@@ -16,6 +16,8 @@ public partial class QuizPage : ContentPage {
     private readonly ShakeDetectionService _shakeService;
     private int _shakeCount = 0;
 
+    DisplayInfo mainDisplayInfo = DeviceDisplay.MainDisplayInfo;
+
     public QuizPage(Deck deck, List<Card> cards) {
         InitializeComponent();
         _deck = deck;
@@ -53,11 +55,13 @@ public partial class QuizPage : ContentPage {
         }
     }
 
-    private void ShowNextQuestion() {
+    private async Task ShowNextQuestion() {
         if (_remainingCards.Count == 0) {
             ShowResults();
             return;
         }
+
+        QuestionFrame.TranslationY = -mainDisplayInfo.Height / 2;
 
         _currentCard = _remainingCards[0];
         _remainingCards.RemoveAt(0);
@@ -68,7 +72,13 @@ public partial class QuizPage : ContentPage {
         QuestionFrame.IsVisible = true;
         AnswerFrame.IsVisible = false;
         ResultsFrame.IsVisible = false;
+
+
+        await QuestionFrame.TranslateTo(QuestionFrame.X, 0, 800);
+
         _shakeService.StartMonitoring();
+
+        AnswerFrame.TranslationY = 0;
     }
 
     private void UpdateProgress() {
@@ -79,7 +89,8 @@ public partial class QuizPage : ContentPage {
 
     private void OnKnowClicked(object sender, EventArgs e) {
         _answeredCount++;
-        ShowNextQuestion();
+        AnswerFrame.Background = new SolidColorBrush(Color.FromArgb("#95ff8a"));
+        OnShowAnswort(_currentCard.Verso);
     }
 
     private void OnDontKnowClicked(object sender, EventArgs e) {
@@ -96,14 +107,26 @@ public partial class QuizPage : ContentPage {
         } else {
             _remainingCards.Add(_currentCard);
         }
+        AnswerFrame.Background = new SolidColorBrush(Color.FromArgb("#ff8a8a"));
+        OnShowAnswort(_currentCard.Verso);
+    }
+
+    private async void OnShowAnswort(string verso) {
+        _shakeService.StopMonitoring();
+
+        await QuestionFrame.RotateYTo(90, 500);
 
         QuestionFrame.IsVisible = false;
         AnswerFrame.IsVisible = true;
         ResultsFrame.IsVisible = false;
 
+        AnswerFrame.RotationY = -90;
+        await AnswerFrame.RotateYTo(0, 500);
+        QuestionFrame.RotationY = 0;
     }
 
-    private void OnNextClicked(object sender, EventArgs e) {
+    private async void OnNextClicked(object sender, EventArgs e) {
+        await AnswerFrame.TranslateTo(AnswerFrame.X, mainDisplayInfo.Height / 2 - 700, 500);
         ShowNextQuestion();
     }
 
