@@ -90,6 +90,7 @@ public partial class QuizPage : ContentPage {
     private void OnKnowClicked(object sender, EventArgs e) {
         _answeredCount++;
         AnswerFrame.Background = new SolidColorBrush(Color.FromArgb("#95ff8a"));
+        AnswerLabel.Text = _currentCard.Verso;
         OnShowAnswort(_currentCard.Verso);
     }
 
