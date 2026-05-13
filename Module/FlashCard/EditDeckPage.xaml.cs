@@ -1,12 +1,12 @@
-﻿using FlashCard.Models;
+using FlashCard.Models;
 using FlashCard.Services;
-using System.Collections.ObjectModel;
+
 
 namespace Flashcard {
     public partial class EditDeckPage : ContentPage, IQueryAttributable {
         private Deck _deck;
         private JsonDataService _dataService;
-        private ObservableCollection<Deck> _decks;
+        private List<Deck> _decks;
 
         public EditDeckPage() {
             InitializeComponent();
@@ -25,7 +25,7 @@ namespace Flashcard {
                 _dataService = service;
             }
 
-            if (query.TryGetValue("decks", out object? decksObj) && decksObj is ObservableCollection<Deck> decks) {
+            if (query.TryGetValue("decks", out object? decksObj) && decksObj is List<Deck> decks) {
                 _decks = decks;
             }
         }
@@ -42,7 +42,7 @@ namespace Flashcard {
             _deck.Name = newName;
 
             // Save immediately to JSON
-            await _dataService.SaveDecksAsync(_decks.ToList());
+            await _dataService.SaveDecksAsync(_decks);
 
             await Shell.Current.GoToAsync("..");
         }

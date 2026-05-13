@@ -4,9 +4,8 @@
              x:Class="FlashCard.DecksPage"
              Title="Mes Decks">
 
-    <Grid RowDefinitions="Auto,*,Auto" Padding="10">
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="10">
 
-        <!-- Header with add button -->
         <VerticalStackLayout>
         <HorizontalStackLayout Grid.Row="0"
                               Spacing="10"
@@ -23,8 +22,45 @@
             </HorizontalStackLayout>
         </VerticalStackLayout>
 
-        <!-- Decks list -->
-        <CollectionView Grid.Row="1"
+        <Grid Grid.Row="1"
+              RowDefinitions="Auto,Auto"
+              Margin="0,0,0,10">
+            <HorizontalStackLayout Grid.Row="0" Spacing="5">
+                <Entry x:Name="SearchEntry"
+                       Placeholder="Rechercher un deck..."
+                       TextChanged="OnSearchTextChanged"
+                       Focused="OnSearchFocused"
+                       Unfocused="OnSearchUnfocused"
+                       HorizontalOptions="FillAndExpand" />
+                <Button Text="X"
+                        Clicked="OnClearSearchClicked"
+                        BackgroundColor="Transparent"
+                        TextColor="Gray"
+                        FontSize="18"
+                        WidthRequest="40" />
+            </HorizontalStackLayout>
+
+            <Frame Grid.Row="1"
+                   x:Name="SuggestionsFrame"
+                   IsVisible="False"
+                   Padding="0"
+                   CornerRadius="4"
+                   HasShadow="True"
+                   ZIndex="10">
+                <ListView x:Name="SuggestionsView"
+                          HasUnevenRows="True"
+                          HeightRequest="200"
+                          ItemTapped="OnSuggestionTapped">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Frame>
+        </Grid>
+
+        <CollectionView Grid.Row="2"
                        x:Name="DecksCollectionView"
                        SelectionMode="None">
             <CollectionView.ItemTemplate>
@@ -99,8 +135,8 @@
             </CollectionView.EmptyView>
         </CollectionView>
 
-        <!-- Info bar -->
-        <Label Grid.Row="2"
+        <!-- Info bar (row 3) -->
+        <Label Grid.Row="3"
                x:Name="InfoLabel"
                Text="Prêt"
                FontSize="12"
