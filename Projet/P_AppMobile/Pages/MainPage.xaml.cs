@@ -1,10 +1,7 @@
 ﻿using EpubSharp;
-using P_AppMobile.Resources.Models;
 using SQLite;
 namespace P_AppMobile {
     public partial class MainPage : ContentPage {
-
-        string filePath;
 
         public MainPage() {
             InitializeComponent();
@@ -12,11 +9,19 @@ namespace P_AppMobile {
 
         protected override async void OnAppearing() {
             base.OnAppearing();
+            List<Resources.Models.EpubFile> epubFiles = await GetAllEpubFiles();
+            foreach (Resources.Models.EpubFile epubFile in epubFiles) {
+                Label label = new Label {
+                    Text = epubFile.Title
+                };
+                RecentBook.Add(label);
+            }
         }
 
 
         private async void AddBookClick(object sender, EventArgs e) {
-            filePath = await PickCustomFile();
+            AddEpubFile();
+            //filePath = await PickCustomFile();
 
 
         }
@@ -39,16 +44,47 @@ namespace P_AppMobile {
             return result?.FullPath ?? string.Empty;
         }
 
-        public async void DbConnexion() {
+        public async void AddEpubFile() {
             var database = new SQLiteAsyncConnection(Path.Combine(FileSystem.AppDataDirectory, "epub.db"));
-            await database.CreateTableAsync<EpubFile>();
+            await database.CreateTableAsync<Resources.Models.EpubFile>();
 
             string filePath = await PickCustomFile();
             var epubBook = EpubReader.Read(filePath);
-            await database.InsertAsync(new EpubFile {
+
+            string title = epubBook.Title ?? "Titre inconnu";
+            string author = epubBook.Authors?.FirstOrDefault() ?? "Auteur inconnu";
+            string uploadedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+            var existingBook = await database.Table<Resources.Models.EpubFile>().FirstOrDefaultAsync(b => b.Title == title);
+
+            if (existingBook != null) {
+                existingBook.FilePath = filePath;
+                existingBook.Author = author;
+                existingBook.UploadedAt = uploadedAt;
+                await database.UpdateAsync(existingBook);
+                await DisplayAlert("Succès", $"Livre mis à jour : {title}", "OK");
+                return;
+            }
+
+            await database.InsertAsync(new Resources.Models.EpubFile {
+                Title = title,
+                Author = author,
                 FilePath = filePath,
-                Title = epubBook.Title
+                UploadedAt = uploadedAt
             });
+
+
+            Label label = new Label {
+                Text = title
+            };
+            RecentBook.Add(label);
+
+            await DisplayAlert("Succès", "Livre chargé : " + epubBook.Title, "OK");
+        }
+
+        public async Task<List<Resources.Models.EpubFile>> GetAllEpubFiles() {
+            var database = new SQLiteAsyncConnection(Path.Combine(FileSystem.AppDataDirectory, "epub.db"));
+            return await database.Table<Resources.Models.EpubFile>().ToListAsync();
         }
     }
 }
