@@ -1,5 +1,6 @@
 using FlashCard.Models;
 using FlashCard.Services;
+using System.Diagnostics;
 
 namespace FlashCard.Pages;
 
@@ -9,6 +10,8 @@ public partial class QuizPage : ContentPage {
     private int _totalCards;
     private int _failedCount;
     private int _answeredCount;
+    private Dictionary<Card, int> _cardFailures; //hashmap
+    private Stopwatch _stopwatch;
 
     private Deck _deck;
 
@@ -26,6 +29,9 @@ public partial class QuizPage : ContentPage {
         _totalCards = cards.Count;
         _failedCount = 0;
         _answeredCount = 0;
+        _cardFailures = new Dictionary<Card, int>();
+        _stopwatch = new Stopwatch();
+        _stopwatch.Start();
 
         _remainingCards = new List<Card>(cards);
         ShuffleCards();
@@ -99,6 +105,12 @@ public partial class QuizPage : ContentPage {
         _failedCount++;
         _answeredCount++;
 
+        if (_cardFailures.ContainsKey(_currentCard)) {
+            _cardFailures[_currentCard]++;
+        } else {
+            _cardFailures[_currentCard] = 1;
+        }
+
         AnswerLabel.Text = _currentCard.Verso;
 
         if (_remainingCards.Count > 0) {
@@ -132,6 +144,7 @@ public partial class QuizPage : ContentPage {
     }
 
     private void ShowResults() {
+        _stopwatch.Stop();
         _shakeService.StopMonitoring();
         QuestionFrame.IsVisible = false;
         AnswerFrame.IsVisible = false;
@@ -142,6 +155,21 @@ public partial class QuizPage : ContentPage {
 
         ScoreLabel.Text = $"Score : {correctCount} / {_totalCards}";
         FailedLabel.Text = $"Questions ratées : {_failedCount}";
+
+        TimeLabel.Text = $"Temps passé : {_stopwatch.Elapsed.ToString(@"mm\:ss")}";
+
+        int perfectCardsCount = _totalCards - _cardFailures.Count;
+        PerfectCardsLabel.Text = $"Cartes sans faute : {perfectCardsCount}";
+
+        double memorizationPercentage = _totalCards > 0 ? ((double)perfectCardsCount / _totalCards) * 100 : 0;
+        MemorizationLabel.Text = $"Mémorisation : {Math.Round(memorizationPercentage)}%";
+
+        if (_cardFailures.Count > 0) {
+            var hardestCard = _cardFailures.OrderByDescending(x => x.Value).First().Key;
+            HardestCardLabel.Text = $"Carte la plus difficile : {hardestCard.Recto}";
+        } else {
+            HardestCardLabel.Text = "Carte la plus difficile : Aucune !";
+        }
 
         QuizProgressBar.Progress = 1;
         ProgressLabel.Text = "Terminé !";

@@ -99,10 +99,36 @@
                            FontSize="20"
                            HorizontalTextAlignment="Center"
                            HorizontalOptions="Center" />
+                           
+                    <Label x:Name="TimeLabel"
+                           Text=""
+                           FontSize="16"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="Center" />
+                           
+                    <Label x:Name="PerfectCardsLabel"
+                           Text=""
+                           FontSize="16"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="Center" />
+                           
+                    <Label x:Name="MemorizationLabel"
+                           Text=""
+                           FontSize="16"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="Center" />
+                           
+                    <Label x:Name="HardestCardLabel"
+                           Text=""
+                           FontSize="16"
+                           TextColor="Red"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="Center" />
+
                     <Label x:Name="FailedLabel"
                            Text=""
                            FontSize="16"
-                           TextColor="#fc0303"
+                           TextColor="Red"
                            HorizontalTextAlignment="Center"
                            HorizontalOptions="Center" />
 
