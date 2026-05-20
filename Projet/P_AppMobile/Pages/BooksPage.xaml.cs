@@ -13,11 +13,12 @@ public partial class BooksPage : ContentPage {
         foreach (Resources.Models.EpubFile epubFile in epubFiles) {
             Button book = new Button {
                 Text = epubFile.Title,
-                BindingContext = epubFile.Id
+                BindingContext = epubFile.Id,
+                Margin = new Thickness(0, 0, 10, 10)
             };
 
             book.Clicked += OnOpenBookClicked;
-            BooksList.Add(book);
+            BooksList.Children.Add(book);
         }
     }
 
@@ -27,6 +28,10 @@ public partial class BooksPage : ContentPage {
     }
 
     private async void OnOpenBookClicked(object sender, EventArgs e) {
-        await Shell.Current.GoToAsync($"{nameof(ReadPage)}?Id={1}");
+        if (sender is Button clickedButton && clickedButton.BindingContext is int bookId) {
+            var readPage = new ReadPage();
+            readPage.BindingContext = bookId; // Passe l'ID ici
+            await Shell.Current.GoToAsync(nameof(ReadPage));
+        }
     }
 }

@@ -4,6 +4,9 @@
              x:Class="P_AppMobile.Pages.ReadPage"
              Title="ReadPage">
     <VerticalStackLayout x:Name="ReadSection">
-        <Label x:Name="Title" FontAttributes="Italic">Titre inconue</Label>
+        <Label x:Name="TitleLabel" FontAttributes="Italic">Titre inconue</Label>
+        <ScrollView>
+            <Editor x:Name="ContentEditor" IsReadOnly="True" />
+        </ScrollView>
     </VerticalStackLayout>
 </ContentPage>
