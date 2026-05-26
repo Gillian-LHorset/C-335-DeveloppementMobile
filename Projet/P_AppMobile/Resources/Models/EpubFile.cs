@@ -1,4 +1,4 @@
-﻿using SQLite;
+using SQLite;
 
 namespace P_AppMobile.Resources.Models {
     public class EpubFile {
@@ -9,5 +9,6 @@ namespace P_AppMobile.Resources.Models {
         public string Author { get; set; } = string.Empty;
         public string FilePath { get; set; } = string.Empty;
         public string UploadedAt { get; set; } = string.Empty;
+        public int LastReadPage { get; set; }
     }
 }

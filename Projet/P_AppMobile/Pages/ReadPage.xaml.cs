@@ -29,18 +29,20 @@ public partial class ReadPage : ContentPage {
         if (book != null) {
             TitleLabel.Text = book.Title;
             AuthorLabel.Text = book.Author;
-            await LoadEpubFile(book.FilePath);
+            await LoadEpubFile(book.FilePath, book.LastReadPage);
         }
     }
 
-    private async Task LoadEpubFile(string filePath) {
+    private async Task LoadEpubFile(string filePath, int lastReadPage) {
         try {
             if (File.Exists(filePath)) {
+                // Parse the epub in a background thread to prevent UI freezing
                 var epubBook = await Task.Run(() => EpubReader.Read(filePath));
                 string plainText = await Task.Run(() => epubBook.ToPlainText());
 
                 _pages = SplitTextIntoPages(plainText, 1500);
-                _currentPageIndex = 0;
+                _currentPageIndex = Math.Min(lastReadPage, _pages.Count - 1);
+                if (_currentPageIndex < 0) _currentPageIndex = 0;
 
                 MainThread.BeginInvokeOnMainThread(() => {
                     DisplayCurrentPage();
@@ -109,17 +111,34 @@ public partial class ReadPage : ContentPage {
         NextButton.IsEnabled = _currentPageIndex < _pages.Count - 1;
     }
 
-    private void OnPrevPageClicked(object sender, EventArgs e) {
-        if (_currentPageIndex > 0) {
-            _currentPageIndex--;
-            DisplayCurrentPage();
+    private async Task SaveCurrentPageIndex() {
+        if (BookId > 0) {
+            try {
+                var database = new SQLiteAsyncConnection(Path.Combine(FileSystem.AppDataDirectory, "epub.db"));
+                var book = await database.Table<Resources.Models.EpubFile>()
+                                         .FirstOrDefaultAsync(b => b.Id == BookId);
+                if (book != null) {
+                    book.LastReadPage = _currentPageIndex;
+                    await database.UpdateAsync(book);
+                }
+            } catch {
+            }
         }
     }
 
-    private void OnNextPageClicked(object sender, EventArgs e) {
+    private async void OnPrevPageClicked(object sender, EventArgs e) {
+        if (_currentPageIndex > 0) {
+            _currentPageIndex--;
+            DisplayCurrentPage();
+            await SaveCurrentPageIndex();
+        }
+    }
+
+    private async void OnNextPageClicked(object sender, EventArgs e) {
         if (_currentPageIndex < _pages.Count - 1) {
             _currentPageIndex++;
             DisplayCurrentPage();
+            await SaveCurrentPageIndex();
         }
     }
 }
