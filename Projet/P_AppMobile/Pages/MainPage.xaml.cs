@@ -1,4 +1,5 @@
 ﻿using EpubSharp;
+using P_AppMobile.Pages;
 using SQLite;
 namespace P_AppMobile {
     public partial class MainPage : ContentPage {
@@ -9,12 +10,35 @@ namespace P_AppMobile {
 
         protected override async void OnAppearing() {
             base.OnAppearing();
-            List<Resources.Models.EpubFile> epubFiles = await GetAllEpubFiles();
+            await LoadRecentBooks();
+        }
+
+        private async Task LoadRecentBooks() {
+            RecentBook.Clear();
+            List<Resources.Models.EpubFile> epubFiles = await GetLatestEpubFiles(5);
             foreach (Resources.Models.EpubFile epubFile in epubFiles) {
-                Label label = new Label {
-                    Text = epubFile.Title
+                Button bookButton = new Button {
+                    Text = $"{epubFile.Title} - {epubFile.Author}",
+                    BindingContext = epubFile.Id,
+                    BackgroundColor = Colors.LightGray,
+                    HorizontalOptions = LayoutOptions.Fill
                 };
-                RecentBook.Add(label);
+                bookButton.Clicked += OnBookButtonClicked;
+                RecentBook.Add(bookButton);
+            }
+        }
+        public async Task<List<Resources.Models.EpubFile>> GetLatestEpubFiles(int limit = 5) {
+            var database = new SQLiteAsyncConnection(Path.Combine(FileSystem.AppDataDirectory, "epub.db"));
+            await database.CreateTableAsync<Resources.Models.EpubFile>();
+            return await database.Table<Resources.Models.EpubFile>()
+                                 .OrderByDescending(b => b.UploadedAt)
+                                 .Take(limit)
+                                 .ToListAsync();
+        }
+
+        private async void OnBookButtonClicked(object? sender, EventArgs e) {
+            if (sender is Button clickedButton && clickedButton.BindingContext is int bookId) {
+                await Shell.Current.GoToAsync($"{nameof(ReadPage)}?bookId={bookId}");
             }
         }
 
@@ -62,6 +86,7 @@ namespace P_AppMobile {
                 existingBook.Author = author;
                 existingBook.UploadedAt = uploadedAt;
                 await database.UpdateAsync(existingBook);
+                await LoadRecentBooks();
                 await DisplayAlert("Succès", $"Livre mis à jour : {title}", "OK");
                 return;
             }
@@ -84,6 +109,7 @@ namespace P_AppMobile {
 
         public async Task<List<Resources.Models.EpubFile>> GetAllEpubFiles() {
             var database = new SQLiteAsyncConnection(Path.Combine(FileSystem.AppDataDirectory, "epub.db"));
+            await database.CreateTableAsync<Resources.Models.EpubFile>();
             return await database.Table<Resources.Models.EpubFile>().ToListAsync();
         }
     }
