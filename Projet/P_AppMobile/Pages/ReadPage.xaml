@@ -3,10 +3,39 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="P_AppMobile.Pages.ReadPage"
              Title="ReadPage">
-    <VerticalStackLayout x:Name="ReadSection">
-        <Label x:Name="TitleLabel" FontAttributes="Italic">Titre inconue</Label>
-        <ScrollView>
-            <Editor x:Name="ContentEditor" IsReadOnly="True" />
+    <Grid RowDefinitions="Auto, *, Auto" Padding="20">
+        <VerticalStackLayout Grid.Row="0" Margin="0, 0, 0, 15">
+            <Label x:Name="TitleLabel" FontAttributes="Italic">Titre inconue</Label>
+            <Label x:Name="AuthorLabel" />
+        </VerticalStackLayout>
+        <ScrollView Grid.Row="1" Margin="0,0,0,15">
+            <Editor x:Name="ContentEditor" 
+                IsReadOnly="True"
+                AutoSize="TextChanges"  />
         </ScrollView>
-    </VerticalStackLayout>
+        <!-- controls buttons -->
+        <Grid Grid.Row="2" ColumnDefinitions="Auto, *, Auto" VerticalOptions="Center" Padding="0, 10, 0, 10">
+            <Button x:Name="PrevButton" 
+            Grid.Column="0" 
+            Text="Précédent" 
+            Clicked="OnPrevPageClicked"
+            BackgroundColor="LightGray"
+            TextColor="Black"
+            WidthRequest="110"/>
+
+            <Label x:Name="PageIndicatorLabel" 
+           Grid.Column="1" 
+           Text="Page 0 / 0" 
+           HorizontalOptions="Center" 
+           VerticalOptions="Center" />
+
+            <Button x:Name="NextButton" 
+            Grid.Column="2" 
+            Text="Suivant" 
+            Clicked="OnNextPageClicked"
+            TextColor="Black"
+            BackgroundColor="LightGray"
+            WidthRequest="110"/>
+        </Grid>
+    </Grid>
 </ContentPage>
