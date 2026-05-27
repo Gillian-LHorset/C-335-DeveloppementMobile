@@ -36,7 +36,6 @@ public partial class ReadPage : ContentPage {
     private async Task LoadEpubFile(string filePath, int lastReadPage) {
         try {
             if (File.Exists(filePath)) {
-                // Parse the epub in a background thread to prevent UI freezing
                 var epubBook = await Task.Run(() => EpubReader.Read(filePath));
                 string plainText = await Task.Run(() => epubBook.ToPlainText());
 
