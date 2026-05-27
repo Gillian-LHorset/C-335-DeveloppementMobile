@@ -22,7 +22,9 @@ public partial class ReadPage : ContentPage {
     }
 
     private async Task LoadEpubFileFromDb(int bookId) {
+        // db connect
         var database = new SQLiteAsyncConnection(Path.Combine(FileSystem.AppDataDirectory, "epub.db"));
+        // get the book from the db where the id is equal to the id pass by the navigation
         var book = await database.Table<Resources.Models.EpubFile>()
                                  .FirstOrDefaultAsync(b => b.Id == bookId);
 
@@ -36,12 +38,17 @@ public partial class ReadPage : ContentPage {
     private async Task LoadEpubFile(string filePath, int lastReadPage) {
         try {
             if (File.Exists(filePath)) {
+                // get all data of a book
                 var epubBook = await Task.Run(() => EpubReader.Read(filePath));
+                // the all text of the book
                 string plainText = await Task.Run(() => epubBook.ToPlainText());
 
+                // 1500 = the size of the page
                 _pages = SplitTextIntoPages(plainText, 1500);
                 _currentPageIndex = Math.Min(lastReadPage, _pages.Count - 1);
-                if (_currentPageIndex < 0) _currentPageIndex = 0;
+                if (_currentPageIndex < 0) {
+                    _currentPageIndex = 0;
+                }
 
                 MainThread.BeginInvokeOnMainThread(() => {
                     DisplayCurrentPage();

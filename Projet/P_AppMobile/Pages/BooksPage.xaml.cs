@@ -8,12 +8,18 @@ public partial class BooksPage : ContentPage {
         InitializeComponent();
     }
 
+    /// <summary>
+    /// Charge all books' name and cover from the db and display them on the page
+    /// </summary>
     protected override async void OnAppearing() {
         base.OnAppearing();
         BooksList.Clear();
+
+        //load every epub (the complet model) from the db
         List<Resources.Models.EpubFile> epubFiles = await GetAllEpubFiles();
 
         foreach (Resources.Models.EpubFile epubFile in epubFiles) {
+            // the container of the book
             VerticalStackLayout bookContainer = new VerticalStackLayout {
                 BackgroundColor = Colors.LightGray,
                 Margin = new Thickness(0, 0, 10, 10),
@@ -40,6 +46,7 @@ public partial class BooksPage : ContentPage {
                         return;
                     }
 
+                    // get all infos from the book
                     EpubBook book = EpubReader.Read(bookPath);
 
                     if (book.CoverImage != null && book.CoverImage.Length > 0) {
@@ -62,6 +69,7 @@ public partial class BooksPage : ContentPage {
 
             Button bookButton = new Button {
                 Text = $"{epubFile.Title}\n{epubFile.Author}",
+                // when is clicked, redirect to the read page with the id of the book from the db
                 BindingContext = epubFile.Id,
                 BackgroundColor = Colors.Transparent,
                 TextColor = Colors.Black,
