@@ -70,28 +70,39 @@ public partial class ReadPage : ContentPage {
 
         int index = 0;
         while (index < text.Length) {
+
+            // the last page
             if (index + pageSize >= text.Length) {
                 pages.Add(text.Substring(index).Trim());
                 break;
             }
 
+            // avoid to cut a word
             int targetEnd = index + pageSize;
             int actualEnd = targetEnd;
 
+            // 
             for (int i = 0; i < 100; i++) {
+                // check to not search after the end of the text && check if it's after the end target of the page
                 if (targetEnd - i < text.Length && targetEnd - i >= index) {
-                    char c = text[targetEnd - i];
-                    if (char.IsWhiteSpace(c)) {
+                    // the last character
+                    char character = text[targetEnd - i];
+                    // if it's a space or return line
+                    if (char.IsWhiteSpace(character)) {
+                        // set the last character as the last letter before space
                         actualEnd = targetEnd - i;
                         break;
                     }
                 }
             }
 
+            // set the new page and trim them
             string pageContent = text.Substring(index, actualEnd - index).Trim();
+
             if (!string.IsNullOrEmpty(pageContent)) {
                 pages.Add(pageContent);
             }
+            // reset the index
             index = actualEnd;
         }
 
@@ -102,6 +113,8 @@ public partial class ReadPage : ContentPage {
     }
 
     private void DisplayCurrentPage() {
+
+        // case the book is empty
         if (_pages == null || _pages.Count == 0) {
             ContentEditor.Text = "Livre vide.";
             PageIndicatorLabel.Text = "Page 0 / 0";
@@ -113,6 +126,7 @@ public partial class ReadPage : ContentPage {
         ContentEditor.Text = _pages[_currentPageIndex];
         PageIndicatorLabel.Text = $"Page {_currentPageIndex + 1} / {_pages.Count}";
 
+        // disable the button at the first or last page
         PrevButton.IsEnabled = _currentPageIndex > 0;
         NextButton.IsEnabled = _currentPageIndex < _pages.Count - 1;
     }
