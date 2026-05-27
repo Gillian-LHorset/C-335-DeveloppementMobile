@@ -24,7 +24,8 @@ public partial class BooksPage : ContentPage {
                 BackgroundColor = Colors.LightGray,
                 Margin = new Thickness(0, 0, 10, 10),
                 HorizontalOptions = LayoutOptions.Fill,
-                Padding = new Thickness(10)
+                Padding = new Thickness(10),
+                BindingContext = epubFile.Id
             };
 
             Image coverImage = new Image {
@@ -33,7 +34,8 @@ public partial class BooksPage : ContentPage {
                 Aspect = Aspect.AspectFit,
                 Margin = new Thickness(0, 0, 0, 10),
                 WidthRequest = 100,
-                BackgroundColor = Colors.LightGray
+                BackgroundColor = Colors.LightGray,
+                InputTransparent = true
             };
 
             // the discard is here because the Task send back a value that we don t use
@@ -67,18 +69,26 @@ public partial class BooksPage : ContentPage {
                 }
             });
 
-            Button bookButton = new Button {
+            Label bookInfoLabel = new Label {
                 Text = $"{epubFile.Title}\n{epubFile.Author}",
                 // when is clicked, redirect to the read page with the id of the book from the db
                 BindingContext = epubFile.Id,
                 BackgroundColor = Colors.Transparent,
                 TextColor = Colors.Black,
-                HorizontalOptions = LayoutOptions.Fill
+                HorizontalOptions = LayoutOptions.Fill,
+                InputTransparent = true
             };
-            bookButton.Clicked += OnOpenBookClicked;
 
+            // simulate the OnClick method
+            var tapGesture = new TapGestureRecognizer();
+            tapGesture.Tapped += (sender, e) => {
+                OnOpenBookClicked(sender, e);
+            };
+            bookContainer.GestureRecognizers.Add(tapGesture);
+
+            // add to the frontend
             bookContainer.Children.Add(coverImage);
-            bookContainer.Children.Add(bookButton);
+            bookContainer.Children.Add(bookInfoLabel);
             BooksList.Children.Add(bookContainer);
         }
     }
@@ -90,7 +100,7 @@ public partial class BooksPage : ContentPage {
     }
 
     private async void OnOpenBookClicked(object sender, EventArgs e) {
-        if (sender is Button clickedButton && clickedButton.BindingContext is int bookId) {
+        if (sender is VisualElement clickedElement && clickedElement.BindingContext is int bookId) {
             await Shell.Current.GoToAsync($"{nameof(ReadPage)}?bookId={bookId}");
         }
     }

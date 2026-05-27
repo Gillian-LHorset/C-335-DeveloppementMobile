@@ -81,7 +81,7 @@ public partial class ReadPage : ContentPage {
             int targetEnd = index + pageSize;
             int actualEnd = targetEnd;
 
-            // 
+            // 100 is a arbitrary limit of try
             for (int i = 0; i < 100; i++) {
                 // check to not search after the end of the text && check if it's after the end target of the page
                 if (targetEnd - i < text.Length && targetEnd - i >= index) {

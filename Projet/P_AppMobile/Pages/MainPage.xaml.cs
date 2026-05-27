@@ -16,15 +16,79 @@ namespace P_AppMobile {
         private async Task LoadRecentBooks() {
             RecentBook.Clear();
             List<Resources.Models.EpubFile> epubFiles = await GetLatestEpubFiles(5);
+
             foreach (Resources.Models.EpubFile epubFile in epubFiles) {
-                Button bookButton = new Button {
-                    Text = $"{epubFile.Title} - {epubFile.Author}",
-                    BindingContext = epubFile.Id,
+
+                // the container of the book
+                VerticalStackLayout bookContainer = new VerticalStackLayout {
                     BackgroundColor = Colors.LightGray,
-                    HorizontalOptions = LayoutOptions.Fill
+                    Margin = new Thickness(0, 0, 10, 10),
+                    HorizontalOptions = LayoutOptions.Fill,
+                    Padding = new Thickness(10),
+                    BindingContext = epubFile.Id
                 };
-                bookButton.Clicked += OnBookButtonClicked;
-                RecentBook.Add(bookButton);
+
+                Image coverImage = new Image {
+                    HeightRequest = 150,
+                    HorizontalOptions = LayoutOptions.Center,
+                    Aspect = Aspect.AspectFit,
+                    Margin = new Thickness(0, 0, 0, 10),
+                    WidthRequest = 100,
+                    BackgroundColor = Colors.LightGray,
+                    InputTransparent = true
+                };
+
+                _ = Task.Run(async () => {
+                    try {
+                        // path from the phone
+                        string bookPath = epubFile.FilePath;
+
+                        if (!File.Exists(bookPath)) {
+                            return;
+                        }
+
+                        // get all infos from the book
+                        EpubBook book = EpubReader.Read(bookPath);
+
+                        if (book.CoverImage != null && book.CoverImage.Length > 0) {
+                            // image for the cache
+                            string fileName = Path.GetFileName(bookPath);
+                            string coverPath = Path.Combine(FileSystem.CacheDirectory, fileName + ".jpg");
+
+                            if (!File.Exists(coverPath)) {
+                                await File.WriteAllBytesAsync(coverPath, book.CoverImage);
+                            }
+
+                            MainThread.BeginInvokeOnMainThread(() => {
+                                // change the cover dynamicaly
+                                coverImage.Source = ImageSource.FromFile(coverPath);
+                            });
+                        }
+                    } catch (Exception ex) {
+                    }
+                });
+
+                Label bookInfoLabel = new Label {
+                    Text = $"{epubFile.Title}\n{epubFile.Author}",
+                    // when is clicked, redirect to the read page with the id of the book from the db
+                    BindingContext = epubFile.Id,
+                    BackgroundColor = Colors.Transparent,
+                    TextColor = Colors.Black,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    InputTransparent = true
+                };
+
+                // simulate the OnClick method
+                var tapGesture = new TapGestureRecognizer();
+                tapGesture.Tapped += (sender, e) => {
+                    OnOpenBookClicked(sender, e);
+                };
+                bookContainer.GestureRecognizers.Add(tapGesture);
+
+                // add to the frontend
+                bookContainer.Children.Add(coverImage);
+                bookContainer.Children.Add(bookInfoLabel);
+                RecentBook.Children.Add(bookContainer);
             }
         }
         public async Task<List<Resources.Models.EpubFile>> GetLatestEpubFiles(int limit = 5) {
@@ -36,8 +100,8 @@ namespace P_AppMobile {
                                  .ToListAsync();
         }
 
-        private async void OnBookButtonClicked(object? sender, EventArgs e) {
-            if (sender is Button clickedButton && clickedButton.BindingContext is int bookId) {
+        private async void OnOpenBookClicked(object sender, EventArgs e) {
+            if (sender is VisualElement clickedElement && clickedElement.BindingContext is int bookId) {
                 await Shell.Current.GoToAsync($"{nameof(ReadPage)}?bookId={bookId}");
             }
         }
@@ -97,13 +161,7 @@ namespace P_AppMobile {
                 FilePath = filePath,
                 UploadedAt = uploadedAt
             });
-
-
-            Label label = new Label {
-                Text = title
-            };
-            RecentBook.Add(label);
-
+            await LoadRecentBooks();
             await DisplayAlert("Succès", "Livre chargé : " + epubBook.Title, "OK");
         }
 
